@@ -75,7 +75,7 @@
 <body>
     <div class="container">
         <h1>Upload EEG data</h1>
-        <form action="/predict" method="post">
+        <form action="/predict" method="post" enctype="multipart/form-data">
             <label for="file">Select an .edf file:</label>
             <label for="file-upload" class="custom-file-upload">
             choose file</label>

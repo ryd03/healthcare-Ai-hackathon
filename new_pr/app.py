@@ -1,8 +1,11 @@
+import io
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import hashlib
 import pickle
 import numpy as np
+from ml_gps import send_email
+
 
 
 app = Flask(__name__)
@@ -86,8 +89,9 @@ def login():
 
 @app.route("/predict", methods = ["POST"])
 def predict():
-    float_features = [float(x) for x in request.form.values()]
-    features = [np.array(float_features)]
+    file = request.files['file']
+    features = np.load(io.BytesIO(file.read()))
+    features=features.reshape(1, 19*500)
     prediction = model.predict(features)
     pred_text =""
 
@@ -95,6 +99,7 @@ def predict():
         pred_text = "normal"
     else:
         pred_text = "abnormal"
+        #send_email(100,100)
 
     return render_template("index.html", prediction_text = "The EEG is {}".format(pred_text))
 
