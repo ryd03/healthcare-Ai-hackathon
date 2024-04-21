@@ -1,9 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import hashlib
+import pickle
+import numpy as np
+
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+model = pickle.load(open("model.pkl", "rb"))
+
 
 # Function to create a connection to the SQLite database
 def create_connection():
@@ -77,6 +82,21 @@ def login():
     
     # Render the login page for GET requests
     return render_template('login.html')
+
+
+@app.route("/predict", methods = ["POST"])
+def predict():
+    float_features = [float(x) for x in request.form.values()]
+    features = [np.array(float_features)]
+    prediction = model.predict(features)
+    pred_text =""
+
+    if prediction == 0:
+        pred_text = "normal"
+    else:
+        pred_text = "abnormal"
+
+    return render_template("index.html", prediction_text = "The EEG is {}".format(pred_text))
 
 if __name__ == '__main__':
     app.run(debug=True)
