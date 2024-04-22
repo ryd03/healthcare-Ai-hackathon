@@ -5,13 +5,14 @@ import hashlib
 import pickle
 import numpy as np
 from ml_gps import send_email
+from ml_gps import location_coordinates
 
 
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 model = pickle.load(open("model.pkl", "rb"))
-
+Gemail =""
 
 # Function to create a connection to the SQLite database
 def create_connection():
@@ -25,6 +26,7 @@ def create_table():
     cursor.execute('''CREATE TABLE IF NOT EXISTS users
                       (id INTEGER PRIMARY KEY AUTOINCREMENT,
                        email TEXT UNIQUE,
+                       gemail TEXT,
                        password TEXT)''')
     conn.commit()
     conn.close()
@@ -44,13 +46,14 @@ def signup():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+        gemail = request.form['gemail']
         password_hash = hashlib.sha256(password.encode()).hexdigest()
         
         # Insert user data into the database
         conn = create_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute("INSERT INTO users (email, password) VALUES (?, ?)", (email, password_hash))
+            cursor.execute("INSERT INTO users (email, password, gemail) VALUES (?, ?,?)", (email, password_hash,gemail))
             conn.commit()
             conn.close()
             return redirect(url_for('login'))
@@ -74,10 +77,13 @@ def login():
         cursor.execute("SELECT * FROM users WHERE email=? AND password=?", (email, password_hash))
         user = cursor.fetchone()
         conn.close()
+
+        global Gemail
         
         if user:
             # If the user exists and the password is correct, set the session variable and redirect to the home page
             session['email'] = email
+            Gemail = user[2]
             return redirect(url_for('index'))
         else:
             # If the user doesn't exist or the password is incorrect, render the login page again with an error message
@@ -102,7 +108,8 @@ def predict():
         pred_text = "normal"
     else:
         pred_text = "abnormal"
-        #send_email(100,100)
+        #lat, long, city, state = location_coordinates()
+        send_email(100,100, Gemail)
 
     return render_template("index.html", prediction_text = "The EEG is {}".format(pred_text))
 

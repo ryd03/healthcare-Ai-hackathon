@@ -47,6 +47,7 @@
         
         input[type="text"],
         input[type="email"],
+        input[type="gemail"],
         input[type="password"],
         input[type="date"],
         input[type="submit"] {
@@ -78,14 +79,28 @@
         <h1>Sign Up</h1>
         <form action="/signup" method="post">
             
+            <label for="text">First Name:</label>
+            <input type="text" id="text" name="text" required> 
+            
+            <label for="text">Last Name:</label>
+            <input type="text" id="text" name="text" required>
             
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
             
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
+
+            <label for="email">Guardian's Email:</label>
+            <input type="gemail" id="gemail" name="gemail" required>
+
+            <label for="date">Date of birth:</label>
+            <input type="date" id="date" name="date" required>
             
             <input type="submit" value="Sign Up">
+
+            <label style="align-self: center;">Already have an account? <a href="\login" style="color: #0056b3; text-decoration: underline;">Login</a></label>
+
         </form>
         
         

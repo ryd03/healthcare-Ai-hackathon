@@ -8,12 +8,12 @@ import smtplib
 # Email configuration
 email_sender = 'hassantarhini45@gmail.com'
 email_pass = "xang psot mbyy qpky"  # Update with your actual password
-email_receiver = 'hassantarhine45@gmail.com'
+email_receiver2 = 'hassantarhine45@gmail.com'
 
 subject = 'Location Coordinates'
 body = "Your child is currently suffering from an epileptic attack. Their current location is:\n"
 
-def send_email(lat, long ):
+def send_email(lat, long ,  email_receiver):
     em = EmailMessage()
     em['From'] = email_sender
     em['To'] = email_receiver
