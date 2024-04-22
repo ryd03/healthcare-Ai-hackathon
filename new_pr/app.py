@@ -37,7 +37,7 @@ def index():
     if 'email' in session:
         return render_template('index.html')
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('signup'))
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -92,6 +92,9 @@ def predict():
     file = request.files['file']
     features = np.load(io.BytesIO(file.read()))
     features=features.reshape(1, 19*500)
+    x_tr_means=np.load('means.npy')
+    x_tr_std= np.load('std.npy')
+    features=(features-x_tr_means)/x_tr_std
     prediction = model.predict(features)
     pred_text =""
 
