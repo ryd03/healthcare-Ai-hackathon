@@ -13,6 +13,7 @@ app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 model = pickle.load(open("model.pkl", "rb"))
 Gemail =""
+PEmail =""
 
 # Function to create a connection to the SQLite database
 def create_connection():
@@ -79,11 +80,13 @@ def login():
         conn.close()
 
         global Gemail
+        global PEmail
         
         if user:
             # If the user exists and the password is correct, set the session variable and redirect to the home page
             session['email'] = email
             Gemail = user[2]
+            PEmail = user[1]
             return redirect(url_for('index'))
         else:
             # If the user doesn't exist or the password is incorrect, render the login page again with an error message
@@ -108,8 +111,13 @@ def predict():
         pred_text = "normal"
     else:
         pred_text = "abnormal"
-        #lat, long, city, state = location_coordinates()
-        send_email(100,100, Gemail)
+        subject = 'Immediate Attention Required'
+        body = "Your child may be experiencing a medical issue and needs your support. Their current location is: Latitude:100, Longitude: 100. Please respond as quickly as possible"
+        send_email(100,100, Gemail , body , subject)
+        subject = 'Important Safety Alert'
+        body = "Please pull over safely and take a moment to rest. Help is available"
+        send_email(100,100, PEmail , body , subject)
+
 
     return render_template("index.html", prediction_text = "The EEG is {}".format(pred_text))
 
